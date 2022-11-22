@@ -40,7 +40,6 @@ We will make 2 tables in the database
 
 We will make 2 tables in the database
 
-# Parking_lots
 
 We will make 2 tables in the database
 
