@@ -38,11 +38,6 @@ Bot_parking.py version 1.1
 
 We will make 2 tables in the database
 
-We will make 2 tables in the database
-
-
-We will make 2 tables in the database
-
 1. Parking_lots
    This will have the data about all the parkings that our system is dealing with.
    Fields are : 1. Org_name (varchar(50)) 2. Org_id (int) PRIMARY KEY 3. Parking_add (varchar(150)) 4. Vid_src (varchar(20))
