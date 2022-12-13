@@ -1,6 +1,6 @@
 import cv2
 import pyodbc as dbc
-import time
+import numpy as np
 
 
 class Bot_parking:
@@ -27,12 +27,12 @@ class Bot_parking:
         # [{"tlc":(x,y), "brc":(x,y), "parking_id":parking_id, "status":"NA/A"},{},{},...]
         # here each dictionary represents one parking space
         statusArray = []
+
         for position in positions:
 
             parking_id = position[0]
             x_start, y_start = position[1], position[2]
             x_end, y_end = position[3], position[4]
-
             parkingSpace = currFrame[y_start:y_end, x_start:x_end]
             parkingSpaceBlur = cv2.GaussianBlur(parkingSpace, (5, 5), 0)
             parkingSpaceGray = cv2.cvtColor(
@@ -93,25 +93,32 @@ class Bot_parking:
         videoCapObj = cv2.VideoCapture(source)
 
         success = True
+        count = 0
         while success:
-            success, frame = videoCapObj.read()
-            resizedFrame = cv2.resize(frame, (900, 636))
-            statusArray = self.compare(resizedFrame, coordinateArr)
-            for item in statusArray:
+            if count % 1 == 0:
+                success, frame = videoCapObj.read()
+                # resizedFrame = cv2.resize(frame, (900, 636))
+                resizedFrame = cv2.resize(
+                    frame, (int(frame.shape[1]*0.5), int(frame.shape[0]*0.5)))
+                statusArray = self.compare(resizedFrame, coordinateArr)
+                count = 0
 
-                if item['status'] == 'A':
-                    color = (0, 255, 0)  # green
+                for item in statusArray:
 
-                else:
-                    color = (0, 0, 255)  # red
+                    if item['status'] == 'A':
+                        color = (0, 255, 0)  # green
 
-                cv2.rectangle(resizedFrame, item['tlc'],
-                              item['brc'], color, 2)
+                    else:
+                        color = (0, 0, 255)  # red
 
-                cv2.imshow('video', resizedFrame)
+                    cv2.rectangle(resizedFrame, item['tlc'],
+                                  item['brc'], color, 2)
 
-            if cv2.waitKey(11) == ord('q'):
-                break
+                    cv2.imshow('video', resizedFrame)
+
+                if cv2.waitKey(11) == ord('q'):
+                    break
+            count += 1
 
     def updateStatus(self):
         # this function will update the status of all the parkings in the db
@@ -140,36 +147,31 @@ class Bot_parking:
 
     def checkStatus(self, source, coordinateArr):
         # this function will run in every 2 mins to check the status of the parking and it will update the value of self.status variable
+        print("opening camera")
         videoCapObj = cv2.VideoCapture(source)
+        print("camera is opened")
+
         if (videoCapObj.isOpened()):
 
-            # for testing only
-            #     f_count = 0
-            #     while True:
-            #         success, frame = videoCapObj.read()
-            #         resizedFrame = cv2.resize(frame, (900, 636))
-            #         f_count += 1
-            #         if f_count == 2000:
-            #             arr = self.compare(resizedFrame, coordinateArr)
-            #             break
-            # for parking in arr:
-            #     print(parking)
-
             success, frame = videoCapObj.read()
-            resizedFrame = cv2.resize(frame, (900, 636))
-            statusArray = self.compare(resizedFrame, coordinateArr)
-            # item of statusArray looks like
-            # {'tlc': (35, 37), 'brc': (159, 239), 'parking_id': 0, 'status': 'A'}
-            temp_status_arry = []
-            for item in statusArray:
-                temp_status_arry.append(
-                    {'parking_id': item['parking_id'], 'status': item['status']})
-            self.status = temp_status_arry
+            if success:
+                # print(frame.shape)
+                resizedFrame = cv2.resize(
+                    frame, (int(frame.shape[1]*0.5), int(frame.shape[0]*0.5)))
+                statusArray = self.compare(resizedFrame, coordinateArr)
+
+                # item of statusArray looks like
+                # {'tlc': (35, 37), 'brc': (159, 239), 'parking_id': 0, 'status': 'A'}
+                temp_status_arry = []
+                for item in statusArray:
+                    temp_status_arry.append(
+                        {'parking_id': item['parking_id'], 'status': item['status']})
+                self.status = temp_status_arry
 
         else:
             print("!!Can't open the camera!!")
 
-    @staticmethod
+    @ staticmethod
     def getParkingLots():
         # this function will fetch all the parkings available in the parking_lots table.
         # this method returns an array of all the parking_lots
@@ -187,14 +189,14 @@ class Bot_parking:
         return data
 
 
-vidLcn = r'D:\DEI\SEMESTER 5\Major project\Bot-parking\videos\parking.mp4'
+rtsp_link = 'rtsp://192.168.1.100:8080/h264_pcm.sdp'
 p1 = Bot_parking()
-
-
-while True:
-    for parking in Bot_parking.getParkingLots():
-        positions = p1.getPositions(parking[1])
-        p1.checkStatus(vidLcn, positions)
-        p1.updateStatus()
-        print('one round completed')
-    time.sleep(5)
+for parking in Bot_parking.getParkingLots():
+    # 'parking' is a tuplel like(org_name, org_id, parking_add, vid_src)
+    org_id = parking[1]
+    positions = p1.getPositions(org_id)
+    # p1.preview(rtsp_link, positions)
+    # p1.preview(rtsp_link, positions)
+    # p1.checkStatus(rtsp_link, positions)
+    # p1.updateStatus()
+    # print('one round completed')
