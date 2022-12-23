@@ -45,3 +45,29 @@ We will make 2 tables in the database
 2. Parking_spaces
    This table will contain all the data about all the parking_spaces in all the parking_lots
    Fields are : 1. Org_id (int) FOREIGN KEY NOT NULL 2. Parking_id (int ) PRIMARY KEY 3. X_tlc (int) NOT NULL 4. y_tlc (int) NOT NULL 5. X_brc (int) NOT NULL 6. y_brc (int) NOT NULL 7. latitude (varchar(20)) 8. longitude(varchar(20)) 9. isReserved (BIT) {1:reserved, 0:not reserved} 10. isAvailable (BIT) {1:available, 0:not available}
+
+# queries to create tables
+
+create table parking_lots
+(
+org_name varchar(50),
+org_id int primary key,
+parking_add varchar(200),
+vid_src varchar(50)
+);
+
+create table parking_spaces
+(
+parking_id int,
+org_id int foreign key references parking_lots(org_id),
+x_tlc int NOT NULL,
+y_tlc int NOT NULL,
+x_brc int NOT NULL,
+y_brc int NOT NULL,
+latitude varchar(20),
+longitude varchar(20),
+isReserved bit,
+isAvailable bit,
+reservedFor varchar(100),
+primary key (parking_id,org_id)
+);
