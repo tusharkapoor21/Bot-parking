@@ -1,0 +1,11 @@
+nav {
+    display: flex;
+    align-items: center;
+    background-color: rgb(145, 192, 190);
+    min-height: 4rem;
+}
+
+#nav_logo {
+    height: 2.5rem;
+    margin: auto 1rem;
+}

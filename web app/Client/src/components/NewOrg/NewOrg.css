@@ -1,0 +1,96 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-evenly;
+    height: calc(100vh - 4rem);
+    width: 100%;
+}
+.imgContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 70%;
+    border: 1px solid black;
+    overflow: auto;
+}
+.listContainer {
+    height: 100%;
+    width: 30%;
+    border: 1px solid black;
+    overflow: auto;
+}
+
+/* parkings table */
+#parkings {
+    /* font-family: Arial, Helvetica, sans-serif; */
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#parkings td,
+#parkings th {
+    /* border: 1px solid #ddd; */
+    padding: 8px;
+}
+#parkings tr {
+    text-align: center;
+}
+
+#parkings tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#parkings tr:hover {
+    /* background-color: #ddd; */
+    background-color: rgba(145, 192, 190, 0.493);
+}
+
+#parkings th {
+    /* border-radius: 10px; */
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: rgb(145, 192, 190);
+    color: white;
+}
+/* parkings table ends */
+
+.btn_in_table {
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    transition: 150ms linear;
+}
+
+.dlt {
+    background-color: rgb(211, 70, 70);
+}
+.dlt:hover {
+    background-color: rgb(255, 0, 0);
+}
+.edit {
+    background-color: rgb(78, 149, 216);
+}
+.edit:hover {
+    background-color: rgb(4, 108, 206);
+}
+
+.btnContainer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 5%;
+}

@@ -1,0 +1,22 @@
+#organisation_form {
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* border: 2px solid salmon; */
+    height: 50%;
+    width: 35%;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    /* border: 2px solid seagreen; */
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+#organisation_form button {
+    margin-top: 2rem;
+}

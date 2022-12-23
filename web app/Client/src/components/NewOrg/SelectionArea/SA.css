@@ -1,0 +1,26 @@
+.canvasContainer {
+    position: relative;
+    /* border: 2px solid rgb(0, 57, 212); */
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+    overflow: auto;
+}
+
+.canvasContainer canvas {
+    position: relative;
+    z-index: 1;
+    /* border: 2px solid seagreen; */
+}
+
+.canvasContainer::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+.canvasContainer::-webkit-scrollbar-thumb {
+    background: rgb(170, 166, 166);
+    border-radius: 10px;
+}
+.canvasContainer::-webkit-scrollbar-thumb:hover {
+    background: rgb(68, 65, 65);
+}
