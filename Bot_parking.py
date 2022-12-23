@@ -3,6 +3,12 @@ import pyodbc as dbc
 import numpy as np
 
 
+cnxn_string = '''DRIVER={ODBC Driver 17 for SQL Server};\
+        Server=localhost\SQLEXPRESS;\
+        Database=bot_parking;\
+        Trusted_Connection=yes;'''
+
+
 class Bot_parking:
     def __init__(self) -> None:
         # 1 for availabe, 0 for not available
@@ -67,11 +73,7 @@ class Bot_parking:
         # the parking lot of org_id
         # this will return an array of tuples of parking_id and positions
         # like [(parking_id, x_tlc,y_tlc,x_brc,y_brc),(...),(...),...]
-        cnxn = dbc.connect(
-            '''DRIVER={ODBC Driver 17 for SQL Server};\
-        Server=localhost\SQLEXPRESS;\
-        Database=bot_parking;\
-        Trusted_Connection=yes;''')
+        cnxn = dbc.connect(cnxn_string)
 
         # creating the cursor
         cursor = cnxn.cursor()
@@ -98,9 +100,9 @@ class Bot_parking:
             if count % 1 == 0:
                 success, frame = videoCapObj.read()
                 # resizedFrame = cv2.resize(frame, (900, 636))
-                resizedFrame = cv2.resize(
-                    frame, (int(frame.shape[1]*0.5), int(frame.shape[0]*0.5)))
-                statusArray = self.compare(resizedFrame, coordinateArr)
+                # resizedFrame = cv2.resize(
+                #     frame, (int(frame.shape[1]*0.5), int(frame.shape[0]*0.5)))
+                statusArray = self.compare(frame, coordinateArr)
                 count = 0
 
                 for item in statusArray:
@@ -111,10 +113,10 @@ class Bot_parking:
                     else:
                         color = (0, 0, 255)  # red
 
-                    cv2.rectangle(resizedFrame, item['tlc'],
+                    cv2.rectangle(frame, item['tlc'],
                                   item['brc'], color, 2)
 
-                    cv2.imshow('video', resizedFrame)
+                    cv2.imshow('video', frame)
 
                 if cv2.waitKey(11) == ord('q'):
                     break
@@ -122,11 +124,7 @@ class Bot_parking:
 
     def updateStatus(self):
         # this function will update the status of all the parkings in the db
-        cnxn = dbc.connect(
-            '''DRIVER={ODBC Driver 17 for SQL Server};\
-        Server=localhost\SQLEXPRESS;\
-        Database=bot_parking;\
-        Trusted_Connection=yes;''')
+        cnxn = dbc.connect(cnxn_string)
 
         # creating the cursor
         cursor = cnxn.cursor()
@@ -156,9 +154,9 @@ class Bot_parking:
             success, frame = videoCapObj.read()
             if success:
                 # print(frame.shape)
-                resizedFrame = cv2.resize(
-                    frame, (int(frame.shape[1]*0.5), int(frame.shape[0]*0.5)))
-                statusArray = self.compare(resizedFrame, coordinateArr)
+                # resizedFrame = cv2.resize(
+                #     frame, (int(frame.shape[1]*0.5), int(frame.shape[0]*0.5)))
+                statusArray = self.compare(frame, coordinateArr)
 
                 # item of statusArray looks like
                 # {'tlc': (35, 37), 'brc': (159, 239), 'parking_id': 0, 'status': 'A'}
@@ -176,11 +174,7 @@ class Bot_parking:
         # this function will fetch all the parkings available in the parking_lots table.
         # this method returns an array of all the parking_lots
         # like [(org_name, org_id, parking_add, vid_src),...]
-        cnxn = dbc.connect(
-            '''DRIVER={ODBC Driver 17 for SQL Server};\
-            Server=localhost\SQLEXPRESS;\
-            Database=bot_parking;\
-            Trusted_Connection=yes;''')
+        cnxn = dbc.connect(cnxn_string)
         cursor = cnxn.cursor()
         data = cursor.execute('SELECT * FROM parking_lots;').fetchall()
         cnxn.commit()
@@ -195,7 +189,6 @@ for parking in Bot_parking.getParkingLots():
     # 'parking' is a tuplel like(org_name, org_id, parking_add, vid_src)
     org_id = parking[1]
     positions = p1.getPositions(org_id)
-    # p1.preview(rtsp_link, positions)
     # p1.preview(rtsp_link, positions)
     # p1.checkStatus(rtsp_link, positions)
     # p1.updateStatus()
